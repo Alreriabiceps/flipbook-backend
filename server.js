@@ -30,17 +30,18 @@ app.get('/health', (req, res) => {
 const imageSchema = new mongoose.Schema({
   url: { type: String, required: true },
   pageIndex: { type: Number, required: true },
+  pageName: { type: String, default: '' },
   uploadedAt: { type: Date, default: Date.now },
 });
 const Image = mongoose.model('Image', imageSchema);
 
 app.post('/api/images', async (req, res) => {
   try {
-    const { url, pageIndex } = req.body;
+    const { url, pageIndex, pageName } = req.body;
     if (!url || typeof pageIndex !== 'number') {
       return res.status(400).json({ error: 'url and pageIndex are required' });
     }
-    const image = new Image({ url, pageIndex });
+    const image = new Image({ url, pageIndex, pageName });
     await image.save();
     res.status(201).json(image);
   } catch (err) {
